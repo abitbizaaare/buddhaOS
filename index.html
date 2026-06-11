@@ -7,125 +7,371 @@
 <style>
 :root{
   --bg:#000;
+  --panel:#020805;
   --green:#00ff66;
   --green2:#7cff9b;
+  --green3:#b7ffd0;
   --dim:#315f41;
   --white:#eafff1;
   --gold:#f0c040;
   --red:#ff4d6d;
+  --blue:#38bdf8;
   --line:rgba(0,255,102,.34);
   --line2:rgba(0,255,102,.65);
+  --glass:rgba(0,0,0,.72);
   --shadow:0 0 20px rgba(0,255,102,.35),0 0 80px rgba(0,255,102,.12);
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#000;color:var(--green);font-family:Consolas,"Courier New",monospace;overflow-x:hidden}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:#000;
+  color:var(--green);
+  font-family:Consolas,"Courier New",monospace;
+  overflow:hidden;
+}
+button,input{font:inherit}
 body::before{
   content:"";
-  position:fixed;inset:0;z-index:2;pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 4px);
+  position:fixed;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.026) 0,rgba(255,255,255,.026) 1px,transparent 1px,transparent 4px);
   mix-blend-mode:screen;
 }
 body::after{
   content:"";
-  position:fixed;inset:0;z-index:3;pointer-events:none;
-  background:radial-gradient(circle at center,transparent 0 52%,rgba(0,0,0,.32) 100%);
+  position:fixed;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at center,transparent 0 52%,rgba(0,0,0,.38) 100%),
+    linear-gradient(90deg,rgba(255,0,0,.025),rgba(0,255,102,.018),rgba(0,0,255,.025));
 }
-#matrix{position:fixed;inset:0;z-index:0;opacity:.22;pointer-events:none}
+#matrix{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  opacity:.24;
+  pointer-events:none;
+}
 .boot{
-  position:fixed;inset:0;z-index:50;background:#000;color:var(--green);
-  display:grid;place-items:center;padding:1.5rem;
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:#000;
+  color:var(--green);
+  display:grid;
+  place-items:center;
+  padding:1.5rem;
 }
-.boot.hidden{opacity:0;visibility:hidden;transition:opacity .7s ease,visibility .7s ease}
+.boot.hidden{
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .7s ease,visibility .7s ease;
+}
 .boot-box{
-  width:min(760px,94vw);border:1px solid var(--line2);padding:1.2rem;
-  box-shadow:var(--shadow);background:rgba(0,0,0,.82);animation:flicker .18s infinite alternate;
+  width:min(820px,94vw);
+  border:1px solid var(--line2);
+  padding:1.2rem;
+  box-shadow:var(--shadow);
+  background:rgba(0,0,0,.86);
+  animation:flicker .16s infinite alternate;
 }
-.boot-title{color:var(--white);font-size:1rem;margin-bottom:1rem;letter-spacing:.18em}
-.boot-log{white-space:pre-wrap;line-height:1.6;min-height:210px;font-size:.86rem}
-.progress{height:8px;border:1px solid var(--line);margin-top:1rem;overflow:hidden}
-.progress span{display:block;height:100%;width:0;background:var(--green);box-shadow:0 0 18px var(--green);transition:width .25s ease}
-.wrap{position:relative;z-index:5;min-height:100vh;display:grid;place-items:center;padding:1rem}
+.boot-title{
+  color:var(--white);
+  font-size:1rem;
+  margin-bottom:1rem;
+  letter-spacing:.18em;
+}
+.boot-log{
+  white-space:pre-wrap;
+  line-height:1.6;
+  min-height:250px;
+  font-size:.86rem;
+}
+.progress{
+  height:8px;
+  border:1px solid var(--line);
+  margin-top:1rem;
+  overflow:hidden;
+}
+.progress span{
+  display:block;
+  height:100%;
+  width:0;
+  background:var(--green);
+  box-shadow:0 0 18px var(--green);
+  transition:width .25s ease;
+}
+.wrap{
+  position:relative;
+  z-index:5;
+  height:100vh;
+  display:grid;
+  place-items:center;
+  padding:1rem;
+}
 .os{
-  width:min(1100px,96vw);min-height:min(760px,94vh);
-  border:1px solid var(--line2);box-shadow:var(--shadow);
-  background:linear-gradient(180deg,rgba(0,255,102,.055),rgba(0,0,0,.92) 22%),rgba(0,0,0,.94);
-  display:grid;grid-template-rows:auto 1fr auto;position:relative;overflow:hidden;
+  width:min(1220px,98vw);
+  height:min(860px,96vh);
+  border:1px solid var(--line2);
+  box-shadow:var(--shadow);
+  background:linear-gradient(180deg,rgba(0,255,102,.055),rgba(0,0,0,.94) 22%),rgba(0,0,0,.96);
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  position:relative;
+  overflow:hidden;
 }
 .os::before{
-  content:"";position:absolute;inset:-20%;
+  content:"";
+  position:absolute;
+  inset:-20%;
   background:linear-gradient(115deg,transparent 0 45%,rgba(0,255,102,.08) 50%,transparent 55% 100%);
-  animation:scan 7s linear infinite;pointer-events:none;
+  animation:scan 7s linear infinite;
+  pointer-events:none;
 }
 .topbar{
-  position:relative;z-index:2;display:flex;justify-content:space-between;gap:1rem;align-items:center;
-  padding:.75rem 1rem;border-bottom:1px solid var(--line);
-  background:rgba(0,0,0,.62);
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  align-items:center;
+  padding:.75rem 1rem;
+  border-bottom:1px solid var(--line);
+  background:rgba(0,0,0,.72);
 }
-.brand strong{display:block;color:var(--white);font-size:clamp(1.4rem,4vw,3rem);line-height:.9;text-shadow:0 0 16px var(--green)}
-.brand span{display:block;color:var(--green2);font-size:.72rem;letter-spacing:.14em;margin-top:.45rem}
-.status{font-size:.7rem;text-align:right;color:var(--green2);line-height:1.55}
+.brand strong{
+  display:block;
+  color:var(--white);
+  font-size:clamp(1.4rem,4vw,3rem);
+  line-height:.9;
+  text-shadow:0 0 16px var(--green);
+}
+.brand span{
+  display:block;
+  color:var(--green2);
+  font-size:.72rem;
+  letter-spacing:.14em;
+  margin-top:.45rem;
+}
+.status{
+  font-size:.7rem;
+  text-align:right;
+  color:var(--green2);
+  line-height:1.55;
+}
 .main{
-  position:relative;z-index:2;display:grid;grid-template-columns:260px minmax(0,1fr);
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:235px minmax(0,1fr) 300px;
   min-height:0;
 }
 .menu{
-  border-right:1px solid var(--line);padding:1rem;background:rgba(0,0,0,.32);
+  border-right:1px solid var(--line);
+  padding:1rem;
+  background:rgba(0,0,0,.36);
+  overflow:auto;
 }
-.menu-title{color:var(--gold);font-size:.74rem;letter-spacing:.18em;margin-bottom:.8rem}
+.menu-title,.panel-title{
+  color:var(--gold);
+  font-size:.72rem;
+  letter-spacing:.18em;
+  margin-bottom:.8rem;
+  text-transform:uppercase;
+}
 .module{
-  display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;color:var(--green);
-  padding:.5rem .55rem;margin:.15rem 0;font:inherit;font-size:.84rem;cursor:pointer;
+  display:block;
+  width:100%;
+  text-align:left;
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--green);
+  padding:.48rem .55rem;
+  margin:.15rem 0;
+  font:inherit;
+  font-size:.82rem;
+  cursor:pointer;
 }
-.module:hover,.module:focus,.module.active{border-color:var(--line2);color:var(--white);background:rgba(0,255,102,.09);outline:none}
+.module:hover,.module:focus,.module.active{
+  border-color:var(--line2);
+  color:var(--white);
+  background:rgba(0,255,102,.09);
+  outline:none;
+}
 .terminal{
-  padding:1rem;display:grid;grid-template-rows:auto 1fr;min-width:0;
+  padding:1rem;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  min-width:0;
+  min-height:0;
 }
 .hero{
-  display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:1rem;margin-bottom:1rem;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 250px;
+  gap:1rem;
+  margin-bottom:1rem;
 }
-.hero-card,.buddha-card,.output{
-  border:1px solid var(--line);background:rgba(0,0,0,.46);box-shadow:inset 0 0 28px rgba(0,255,102,.04);
+.hero-card,.buddha-card,.output,.side-panel,.log-panel,.fs-panel{
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.48);
+  box-shadow:inset 0 0 28px rgba(0,255,102,.04);
 }
 .hero-card{padding:1rem}
-.hero-card h1{margin:0;color:var(--green2);font-size:clamp(2.6rem,8vw,6.2rem);line-height:.82;text-shadow:0 0 20px var(--green)}
-.hero-card p{color:var(--white);line-height:1.7;margin:.8rem 0}
+.hero-card h1{
+  margin:0;
+  color:var(--green2);
+  font-size:clamp(2.4rem,7vw,5.8rem);
+  line-height:.82;
+  text-shadow:0 0 20px var(--green);
+}
+.hero-card p{
+  color:var(--white);
+  line-height:1.65;
+  margin:.75rem 0;
+  font-size:.9rem;
+}
 .button{
-  display:inline-block;border:1px solid var(--line2);padding:.7rem 1rem;color:var(--green);text-decoration:none;margin:.25rem .4rem .25rem 0;
+  display:inline-block;
+  border:1px solid var(--line2);
+  padding:.62rem .9rem;
+  color:var(--green);
+  background:transparent;
+  text-decoration:none;
+  margin:.2rem .35rem .2rem 0;
+  cursor:pointer;
 }
-.button:hover{background:var(--green);color:#001b0b}
-.buddha-card{display:grid;place-items:center;padding:1rem;min-height:230px;color:#fff;text-shadow:0 0 8px #fff,0 0 20px var(--green)}
-.buddha-card pre{font-size:10px;line-height:1.05;margin:0}
+.button:hover,.button:focus{
+  background:var(--green);
+  color:#001b0b;
+  outline:none;
+}
+.buddha-card{
+  display:grid;
+  place-items:center;
+  padding:1rem;
+  min-height:220px;
+  color:#fff;
+  text-shadow:0 0 8px #fff,0 0 20px var(--green);
+}
+.buddha-card pre{
+  font-size:10px;
+  line-height:1.05;
+  margin:0;
+}
 .output{
-  min-height:270px;max-height:360px;overflow:auto;padding:1rem;color:var(--white);line-height:1.55;white-space:pre-wrap;
+  min-height:0;
+  overflow:auto;
+  padding:1rem;
+  color:var(--white);
+  line-height:1.55;
+  white-space:pre-wrap;
 }
-.output .green{color:var(--green2)}
-.output .gold{color:var(--gold)}
-.output .red{color:var(--red)}
+.output .green,.log .green{color:var(--green2)}
+.output .gold,.log .gold{color:var(--gold)}
+.output .red,.log .red{color:var(--red)}
+.output .blue,.log .blue{color:var(--blue)}
+.side{
+  border-left:1px solid var(--line);
+  padding:1rem;
+  display:grid;
+  grid-template-rows:auto 1fr 1fr;
+  gap:1rem;
+  min-height:0;
+  background:rgba(0,0,0,.26);
+}
+.side-panel,.log-panel,.fs-panel{
+  padding:.8rem;
+  min-height:0;
+  overflow:auto;
+}
+.log{
+  font-size:.68rem;
+  line-height:1.45;
+  color:var(--green2);
+  white-space:pre-wrap;
+}
+.fs-tree{
+  color:var(--white);
+  font-size:.75rem;
+  line-height:1.5;
+  white-space:pre-wrap;
+}
 .cmdbar{
-  position:relative;z-index:2;display:flex;align-items:center;gap:.5rem;border-top:1px solid var(--line);padding:.8rem 1rem;background:rgba(0,0,0,.68);
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  border-top:1px solid var(--line);
+  padding:.8rem 1rem;
+  background:rgba(0,0,0,.76);
 }
-.prompt{color:var(--green2);white-space:nowrap}
+.prompt{
+  color:var(--green2);
+  white-space:nowrap;
+}
 #cmd{
-  flex:1;background:transparent;border:0;color:var(--white);font:inherit;outline:none;min-width:0;
+  flex:1;
+  background:transparent;
+  border:0;
+  color:var(--white);
+  font:inherit;
+  outline:none;
+  min-width:0;
 }
-.cursor{width:9px;height:1.2em;background:var(--green);display:inline-block;animation:blink 1s steps(1) infinite}
+.cursor{
+  width:9px;
+  height:1.2em;
+  background:var(--green);
+  display:inline-block;
+  animation:blink 1s steps(1) infinite;
+}
 .secret-panel{
-  display:none;position:absolute;z-index:20;inset:1rem;border:1px solid var(--gold);background:rgba(0,0,0,.95);
-  padding:1rem;box-shadow:0 0 50px rgba(240,192,64,.28);overflow:auto;
+  display:none;
+  position:absolute;
+  z-index:20;
+  inset:1rem;
+  border:1px solid var(--gold);
+  background:rgba(0,0,0,.96);
+  padding:1rem;
+  box-shadow:0 0 50px rgba(240,192,64,.28);
+  overflow:auto;
 }
 .secret-panel.active{display:block}
-.secret-panel button{float:right;border:1px solid var(--gold);background:#000;color:var(--gold);font:inherit;padding:.4rem .7rem;cursor:pointer}
-.secret-panel h2{color:var(--gold);font-size:2rem}
+.secret-panel button{
+  float:right;
+  border:1px solid var(--gold);
+  background:#000;
+  color:var(--gold);
+  font:inherit;
+  padding:.4rem .7rem;
+  cursor:pointer;
+}
+.secret-panel h2{
+  color:var(--gold);
+  font-size:2rem;
+}
 .fade-matrix{animation:matrixPulse .7s ease 3}
+.void-mode{filter:contrast(1.25) brightness(.72) saturate(1.4)}
+.awake-mode{box-shadow:0 0 30px rgba(240,192,64,.55),0 0 120px rgba(0,255,102,.25)}
 @keyframes blink{50%{opacity:0}}
 @keyframes scan{to{transform:translateX(40%)}}
-@keyframes flicker{from{filter:brightness(.9)}to{filter:brightness(1.18)}}
+@keyframes flicker{from{filter:brightness(.9)}to{filter:brightness(1.16)}}
 @keyframes matrixPulse{50%{box-shadow:0 0 80px var(--green)}}
-@media(max-width:820px){
+@media(max-width:980px){
+  html,body{overflow:auto}
+  .wrap{height:auto;min-height:100vh}
+  .os{height:auto;min-height:96vh}
   .main{grid-template-columns:1fr}
   .menu{border-right:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(2,1fr);gap:.2rem}
   .menu-title{grid-column:1/-1}
   .hero{grid-template-columns:1fr}
+  .side{border-left:0;border-top:1px solid var(--line);grid-template-rows:auto auto auto}
   .status{text-align:left}
   .topbar{flex-direction:column;align-items:flex-start}
 }
@@ -160,10 +406,15 @@ The teacher removes the hat.
 The whale listens beneath the interface.
 Reality remains reversible in mind.
 
-COMMANDS UNLOCKED:
+UNLOCKED COMMANDS:
   awaken
   void
   core
+  open /core
+  run matrix.deep
+
+SYSTEM NOTE:
+This is not a real OS. It is a believable ritual shell.
       </pre>
     </div>
 
@@ -200,9 +451,10 @@ COMMANDS UNLOCKED:
         <div class="hero">
           <div class="hero-card">
             <h1>BuddhaOS</h1>
-            <p>A BIOS-era experimental operating system shell. Type commands below or click a module.</p>
+            <p>A simulated BIOS-era operating system shell. Type commands below, click a module, inspect fake directories, and unlock hidden systems.</p>
             <a class="button" href="FINAL_BUDDHAOS_MERGED.zip">Download Release</a>
             <button class="button" id="recurseBtn">RECURSE</button>
+            <button class="button" id="matrixBtn">MATRIX</button>
           </div>
           <div class="buddha-card">
 <pre>
@@ -221,6 +473,21 @@ COMMANDS UNLOCKED:
         </div>
         <div class="output" id="output"></div>
       </section>
+
+      <aside class="side">
+        <section class="side-panel">
+          <div class="panel-title">// FILE SYSTEM</div>
+          <div class="fs-tree" id="fsTree"></div>
+        </section>
+        <section class="log-panel">
+          <div class="panel-title">// SYSTEM LOG</div>
+          <div class="log" id="syslog"></div>
+        </section>
+        <section class="fs-panel">
+          <div class="panel-title">// PROCESS TABLE</div>
+          <div class="fs-tree" id="processTable"></div>
+        </section>
+      </aside>
     </main>
 
     <footer class="cmdbar">
@@ -238,35 +505,64 @@ COMMANDS UNLOCKED:
   const cmd = $("cmd");
   const os = $("os");
   const secretPanel = $("secretPanel");
-  let history = [];
-  let historyIndex = -1;
-  let recursion = 0;
-  let secretUnlocked = false;
+  const syslog = $("syslog");
+  const fsTree = $("fsTree");
+  const processTable = $("processTable");
+
+  const state = {
+    cwd:"/",
+    recursion:0,
+    secretUnlocked:false,
+    awake:false,
+    matrixDeep:false,
+    history:[],
+    historyIndex:-1,
+    processes:[
+      ["001","kernel","stable"],
+      ["004","matrix.rain","unstable"],
+      ["007","archive.index","listening"],
+      ["011","whale.ai","idle"],
+      ["432","frequency.clock","locked"]
+    ]
+  };
+
+  const fs = {
+    "/":["core","kernel","modules","worlds","archive","tmp"],
+    "/core":["buddha.sys","manhattan.lock","void.dev","awaken.bin"],
+    "/kernel":["boot.seq","scheduler.fake","bios.term","432hz.clock"],
+    "/modules":["help.mod","matrix.mod","mantra.mod","whale.mod","qaward.mod"],
+    "/worlds":["music","market","fashion","buddha","shop","arcade","lore"],
+    "/archive":["samue.fit","jere.bmx","projectmanhattan.html","qaward.feed","suchness.txt"],
+    "/tmp":["recursion.cache","last.command","signal.noise"]
+  };
 
   const moduleText = {
     help:`<span class="green">HELP</span>
-Commands:
+Core commands:
   help
+  ls
+  ls /core
+  open <module>
   open worlds
-  open music
-  open market
-  open fashion
-  open buddha
-  open archive
-  open shop
-  open arcade
-  open lore
-  enter matrix
-  run mantra
-  recurse
+  run <module>
   clear
+  recurse
+  matrix
+  mantra
 
-Hidden:
+Examples:
+  open archive
+  run mantra
+  run matrix
+  enter matrix
+  open /core
+
+Hidden commands:
   core
   void
   awaken
 
-Cipher:
+Cipher-locked:
   manhattan`,
     worlds:`<span class="gold">SEVEN DOORS, ONE ARCHIVE</span>
 [1] MUSIC
@@ -330,8 +626,23 @@ All moments occur simultaneously.`,
     mantra:`suchness...`
   };
 
+  function now(){
+    const d = new Date();
+    return d.toTimeString().slice(0,8);
+  }
+
+  function log(msg,type="green"){
+    const line = `[${now()}] ${msg}`;
+    const div = document.createElement("div");
+    div.className = type;
+    div.textContent = line;
+    syslog.appendChild(div);
+    while(syslog.children.length > 80) syslog.firstChild.remove();
+    syslog.scrollTop = syslog.scrollHeight;
+  }
+
   function print(html){
-    output.innerHTML += "\\n" + html + "\\n";
+    output.innerHTML += "\n" + html + "\n";
     output.scrollTop = output.scrollHeight;
   }
 
@@ -340,59 +651,166 @@ All moments occur simultaneously.`,
     output.scrollTop = output.scrollHeight;
   }
 
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  }
+
+  function renderFS(){
+    let text = "/\n";
+    Object.keys(fs).forEach(path=>{
+      if(path === "/") return;
+      text += `├─ ${path.replace("/","")}/\n`;
+      fs[path].slice(0,5).forEach((item,i)=>{
+        text += `│  ${i === Math.min(fs[path].length,5)-1 ? "└" : "├"}─ ${item}\n`;
+      });
+    });
+    fsTree.textContent = text;
+  }
+
+  function renderProcesses(){
+    processTable.textContent = "PID   PROCESS           STATE\n" +
+      state.processes.map(p => `${p[0].padEnd(5)} ${p[1].padEnd(17)} ${p[2]}`).join("\n");
+  }
+
+  function listDir(path){
+    const target = path || state.cwd;
+    if(!fs[target]) return `<span class="red">ls: cannot access ${escapeHtml(target)}</span>`;
+    return `<span class="green">${target}</span>\n` + fs[target].map(x => "  " + x).join("\n");
+  }
+
   function openModule(name){
+    name = name.replace(/^\//,"");
     document.querySelectorAll(".module").forEach(b => b.classList.toggle("active", b.dataset.module === name));
-    if(name === "matrix") os.classList.add("fade-matrix");
+    if(name === "matrix") pulseMatrix();
+    if(moduleText[name]){
+      setOutput(moduleText[name]);
+      log(`module opened: ${name}`);
+    } else if(fs["/" + name]){
+      setOutput(listDir("/" + name));
+      log(`directory opened: /${name}`);
+    } else {
+      setOutput(`<span class="red">MODULE NOT FOUND:</span> ${escapeHtml(name)}`);
+      log(`module not found: ${name}`,"red");
+    }
+  }
+
+  function pulseMatrix(){
+    os.classList.add("fade-matrix");
     setTimeout(()=>os.classList.remove("fade-matrix"),900);
-    setOutput(moduleText[name] || "MODULE NOT FOUND");
+  }
+
+  function unlockSecret(){
+    state.secretUnlocked = true;
+    secretPanel.classList.add("active");
+    log("PROJECTMANHATTAN secret panel unlocked","gold");
+    print(`<span class="gold">PROJECTMANHATTAN HANDSHAKE ACCEPTED.</span>`);
   }
 
   function runCommand(raw){
     const v = raw.trim().toLowerCase();
     if(!v) return;
-    history.push(v);
-    historyIndex = history.length;
-    print(`<span class="green">bizaare&gt;</span> ${escapeHtml(v)}`);
 
-    if(v === "clear" || v === "cls"){ output.innerHTML = ""; return; }
+    state.history.push(v);
+    state.historyIndex = state.history.length;
+    print(`<span class="green">bizaare&gt;</span> ${escapeHtml(v)}`);
+    log(`cmd: ${v}`);
+
+    if(v === "clear" || v === "cls"){
+      output.innerHTML = "";
+      log("terminal cleared");
+      return;
+    }
+
     if(v === "help"){ openModule("help"); return; }
-    if(v.startsWith("open ")){ openModule(v.replace("open ","").trim()); return; }
-    if(v === "enter matrix"){ openModule("matrix"); return; }
-    if(v === "run mantra" || v === "mantra"){ openModule("mantra"); return; }
+
+    if(v === "ls"){
+      print(listDir(state.cwd));
+      return;
+    }
+
+    if(v.startsWith("ls ")){
+      print(listDir(v.slice(3).trim()));
+      return;
+    }
+
+    if(v.startsWith("open ")){
+      const arg = v.replace("open ","").trim();
+      if(arg.startsWith("/")){
+        print(listDir(arg));
+        log(`filesystem path opened: ${arg}`);
+      } else openModule(arg);
+      return;
+    }
+
+    if(v.startsWith("run ")){
+      const arg = v.replace("run ","").trim();
+      if(arg === "mantra"){ openModule("mantra"); return; }
+      if(arg === "matrix" || arg === "matrix.deep"){ openModule("matrix"); pulseMatrix(); log("matrix run sequence triggered","gold"); return; }
+      openModule(arg);
+      return;
+    }
+
+    if(v === "matrix" || v === "enter matrix"){
+      openModule("matrix");
+      return;
+    }
+
+    if(v === "mantra"){
+      openModule("mantra");
+      return;
+    }
+
     if(v === "recurse"){
-      recursion++;
-      print(`<span class="gold">RECURSION INDEX:</span> ${recursion}\\nThe archive calls itself from within itself.`);
+      state.recursion++;
+      print(`<span class="gold">RECURSION INDEX:</span> ${state.recursion}\nThe archive calls itself from within itself.`);
+      log(`recursion advanced: ${state.recursion}`,"gold");
+      if(state.recursion % 3 === 0) pulseMatrix();
       return;
     }
+
     if(v === "manhattan"){
-      secretUnlocked = true;
-      secretPanel.classList.add("active");
-      print(`<span class="gold">PROJECTMANHATTAN HANDSHAKE ACCEPTED.</span>`);
+      unlockSecret();
       return;
     }
+
     if(v === "core"){
-      if(!secretUnlocked){ print(`<span class="red">CORE LOCKED. CIPHER REQUIRED.</span>`); return; }
-      print(`<span class="gold">CORE:</span> where design becomes identity.`);
+      if(!state.secretUnlocked){
+        print(`<span class="red">CORE LOCKED. CIPHER REQUIRED.</span>`);
+        log("core access denied","red");
+        return;
+      }
+      print(`<span class="gold">CORE:</span> where design becomes identity.\n/core mounted read-only.\nvoid.dev listening.`);
+      log("core accessed","gold");
       return;
     }
+
     if(v === "void"){
       print(`<span class="red">VOID:</span> signal absent. archive still listening.`);
-      document.body.style.filter = "contrast(1.25) brightness(.8)";
-      setTimeout(()=>document.body.style.filter="",800);
+      os.classList.add("void-mode");
+      log("void visual mode triggered","red");
+      setTimeout(()=>os.classList.remove("void-mode"),900);
       return;
     }
-    if(v === "awaken"){
-      if(!secretUnlocked){ print(`<span class="red">AWAKEN DENIED. TYPE THE CIPHER.</span>`); return; }
-      print(`<span class="green">AWAKEN:</span> BuddhaOS kernel enters mythic shell mode.`);
-      os.classList.add("fade-matrix");
-      return;
-    }
-    if(moduleText[v]){ openModule(v); return; }
-    print(`<span class="red">ERROR:</span> unknown command. type help.`);
-  }
 
-  function escapeHtml(s){
-    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+    if(v === "awaken"){
+      if(!state.secretUnlocked){
+        print(`<span class="red">AWAKEN DENIED. TYPE THE CIPHER.</span>`);
+        log("awaken denied","red");
+        return;
+      }
+      state.awake = true;
+      os.classList.add("awake-mode");
+      print(`<span class="green">AWAKEN:</span> BuddhaOS enters mythic simulation mode.\nwhale.ai state changed: idle -> listening`);
+      log("awaken sequence complete","gold");
+      state.processes[3][2] = "listening";
+      renderProcesses();
+      return;
+    }
+
+    if(moduleText[v]){ openModule(v); return; }
+
+    print(`<span class="red">ERROR:</span> unknown command. type help.`);
+    log(`unknown command: ${v}`,"red");
   }
 
   document.querySelectorAll(".module").forEach(btn => {
@@ -400,6 +818,7 @@ All moments occur simultaneously.`,
   });
 
   $("recurseBtn").addEventListener("click",()=>runCommand("recurse"));
+  $("matrixBtn").addEventListener("click",()=>runCommand("matrix"));
   $("closeSecret").addEventListener("click",()=>secretPanel.classList.remove("active"));
 
   cmd.addEventListener("keydown", e => {
@@ -408,14 +827,14 @@ All moments occur simultaneously.`,
       cmd.value = "";
     } else if(e.key === "ArrowUp"){
       e.preventDefault();
-      if(history.length){
-        historyIndex = Math.max(0, historyIndex - 1);
-        cmd.value = history[historyIndex] || "";
+      if(state.history.length){
+        state.historyIndex = Math.max(0, state.historyIndex - 1);
+        cmd.value = state.history[state.historyIndex] || "";
       }
     } else if(e.key === "ArrowDown"){
       e.preventDefault();
-      historyIndex = Math.min(history.length, historyIndex + 1);
-      cmd.value = history[historyIndex] || "";
+      state.historyIndex = Math.min(state.history.length, state.historyIndex + 1);
+      cmd.value = state.history[state.historyIndex] || "";
     }
   });
 
@@ -426,39 +845,42 @@ All moments occur simultaneously.`,
     }
   });
 
-  // Boot sequence
   const bootLines = [
-    "INITIALIZING BUDDHAOS KERNEL...",
-    "LOADING MODULES...",
-    "PROJECTMANHATTAN HANDSHAKE...",
-    "Q@W@RD PROTOCOL ONLINE...",
-    "MATRIX RAIN DRIVER ATTACHED...",
-    "ARCHIVE DEPTH: INFINITY",
-    "432HZ CLOCK: STABLE",
-    "READY."
+    ["[OK] Kernel initialized","green"],
+    ["[OK] Loading modules...","green"],
+    ["[OK] Mounting /core /kernel /modules /worlds /archive","green"],
+    ["[WARN] Matrix module unstable","gold"],
+    ["[OK] PROJECTMANHATTAN handshake complete","green"],
+    ["[OK] Q@W@RD protocol online","green"],
+    ["[OK] Whale AI linked","green"],
+    ["[OK] 432HZ clock stable","green"],
+    ["[READY] BuddhaOS shell active","green"]
   ];
   const bootLog = $("bootLog");
   const bar = $("bar");
   let i = 0;
   const bootTimer = setInterval(()=>{
-    bootLog.textContent += bootLines[i] + "\\n";
+    const [msg,type] = bootLines[i];
+    bootLog.textContent += msg + "\n";
+    log(msg.replace(/^\[[A-Z]+\]\s*/,""),type);
     bar.style.width = Math.round(((i+1)/bootLines.length)*100) + "%";
     i++;
     if(i >= bootLines.length){
       clearInterval(bootTimer);
       setTimeout(()=>{
         $("boot").classList.add("hidden");
+        renderFS();
+        renderProcesses();
         openModule("help");
         cmd.focus();
-      },550);
+      },650);
     }
-  },280);
+  },310);
 
-  // Matrix canvas
   const canvas = $("matrix");
   const ctx = canvas.getContext("2d");
   let w,h,cols,drops;
-  const chars = "01$@QWRD佛OS◈";
+  const chars = "01$@QWRD佛OS◈ERROR";
   const size = 16;
   function resize(){
     w = canvas.width = innerWidth;
@@ -468,10 +890,12 @@ All moments occur simultaneously.`,
   }
   resize();
   addEventListener("resize", resize);
+
   setInterval(()=>{
+    if(document.hidden) return;
     ctx.fillStyle = "rgba(0,0,0,.08)";
     ctx.fillRect(0,0,w,h);
-    ctx.fillStyle = "#00ff66";
+    ctx.fillStyle = state.matrixDeep ? "#f0c040" : "#00ff66";
     ctx.font = size + "px Consolas, monospace";
     for(let c=0;c<cols;c++){
       const t = chars[Math.floor(Math.random()*chars.length)];
@@ -480,6 +904,9 @@ All moments occur simultaneously.`,
       drops[c]++;
     }
   },45);
+
+  renderFS();
+  renderProcesses();
 })();
 </script>
 </body>
